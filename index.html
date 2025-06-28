@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Банка Варенья</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto:wght@300&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="container">
+    <h1>Банка самых тёплых моментов</h1>
+    <p class="subtitle">Добавляй каждый день до дня рождения!</p>
+
+    <div class="jar-container">
+      <div class="jamometer">
+        <div class="mark" style="bottom: 0%;" title="Только начали">0%</div>
+        <div class="mark" style="bottom: 25%;" title="Сладкий старт">25%</div>
+        <div class="mark" style="bottom: 50%;" title="Половина радости">50%</div>
+        <div class="mark" style="bottom: 75%;" title="Почти праздник!">75%</div>
+        <div class="mark" style="bottom: 100%;" title="Готово к празднику!">100%</div>
+      </div>
+
+      <div class="jar-lid"></div>
+      <div class="jar">
+        <div class="jam" id="jam-level"></div>
+      </div>
+    </div>
+
+    <button id="pour-button">Влить варенье</button>
+    <p id="message-area"></p>
+    <p id="day-counter"></p>
+  </div>
+
+  <div id="overlay" class="hidden">
+    <div class="final-message">
+      С ДНЁМ ВАРЕНЬЯ!!! 🎉🍓
+    </div>
+  </div>
+
+  <script src="phrases.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

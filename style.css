@@ -1,0 +1,152 @@
+body {
+  background: linear-gradient(to top, #f3e7e9, #e3eeff);
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  text-align: center;
+  color: #333;
+  overflow-x: hidden;
+}
+
+.container {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(31,38,135,0.3);
+}
+
+h1 {
+  font-family: 'Lobster', cursive;
+  color: #c83a5c;
+  font-size: 2.5em;
+  margin-bottom: 0;
+}
+
+.subtitle {
+  margin-top: 5px;
+  font-size: 1.1em;
+  color: #555;
+}
+
+.jar-container {
+  position: relative;
+  width: 200px;
+  height: 300px;
+  margin: 30px auto;
+}
+
+.jar-lid {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 30px;
+  background: #d4af37;
+  border: 2px solid #b8860b;
+  border-radius: 10px 10px 5px 5px;
+  z-index: 2;
+}
+
+.jar {
+  position: absolute;
+  bottom: 0;
+  width: 200px;
+  height: 270px;
+  background: rgba(230, 240, 255, 0.6);
+  border: 5px solid rgba(200, 220, 240, 0.8);
+  border-radius: 10px 10px 40px 40px / 10px 10px 30px 30px;
+  overflow: hidden;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.jam {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: linear-gradient(to top, #e53935, #c83a5c);
+  border-radius: 0 0 35px 35px / 0 0 25px 25px;
+  transition: height 1.5s ease-in-out;
+}
+
+#pour-button {
+  font-family: 'Lobster', cursive;
+  font-size: 1.5em;
+  padding: 15px 30px;
+  background: #e53935;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+#pour-button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+#message-area {
+  margin-top: 20px;
+  font-size: 1em;
+  color: #c83a5c;
+  font-weight: bold;
+}
+
+#day-counter {
+  margin-top: 10px;
+  font-size: 1em;
+  color: #333;
+}
+
+.jamometer {
+  position: absolute;
+  right: -60px;
+  bottom: 0;
+  width: 50px;
+  height: 100%;
+  font-size: 0.75em;
+  color: #c33;
+}
+
+.jamometer .mark {
+  position: absolute;
+  right: 0;
+  transform: translateY(50%);
+  background: rgba(255,255,255,0.8);
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.jamometer .mark:hover {
+  background-color: #ffcdd2;
+  cursor: help;
+}
+
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to bottom, #c2185b, #f06292);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+#overlay.hidden {
+  display: none;
+}
+
+.final-message {
+  color: white;
+  font-size: 3em;
+  font-family: 'Lobster', cursive;
+  text-align: center;
+}
