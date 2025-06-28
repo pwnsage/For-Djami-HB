@@ -2,28 +2,64 @@
 
 const startDate = new Date();
 startDate.setHours(0, 0, 0, 0);
-const endDate = new Date("2026-01-05T00:00:00");
-endDate.setHours(0, 0, 0, 0);
-const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
 
-const pourButton = document.getElementById("pour-button");
-const jamLevel = document.getElementById("jam-level");
-const messageArea = document.getElementById("message-area");
-const dayCounter = document.getElementById("day-counter");
-const overlay = document.getElementById("overlay");
+const endDate = new Date("2026-01-05");
+endDate.setHours(0, 0, 0, 0);
+
+const totalDays = Math.ceil((endDate - startDate) / 86400000);
+
+const elements = {
+  button: document.getElementById("pour-button"),
+  jam: document.getElementById("jam-level"),
+  message: document.getElementById("message-area"),
+  counter: document.getElementById("day-counter"),
+  overlay: document.getElementById("overlay")
+};
 
 document.addEventListener("DOMContentLoaded", () => {
-  pourButton.addEventListener("click", pourJam);
-  checkState();
+  elements.button.addEventListener("click", pourJam);
+  updateState();
 });
 
-function updateJarVisual(filledDays) {
-  const percent = (filledDays / totalDays) * 100;
-  jamLevel.style.height = `${percent}%`;
+function updateState() {
+  const today = getToday();
+  const filledDays = +localStorage.getItem("jamJarFilledDays") || 0;
+  const lastPour = localStorage.getItem("jamJarLastPourDate");
 
-  const remaining = totalDays - filledDays;
+  updateJar(filledDays);
 
-  const specialMessages = {
+  if (filledDays >= totalDays || today > endDate) return finishJar(filledDays);
+
+  elements.button.disabled = (lastPour === today.toISOString().split("T")[0]);
+  elements.message.textContent = elements.button.disabled
+    ? "На сегодня варенье уже влито 🍓"
+    : "Нажми, чтобы добавить немного тепла 🙂";
+}
+
+function pourJam() {
+  const today = getToday();
+  const todayStr = today.toISOString().split("T")[0];
+  const lastPour = localStorage.getItem("jamJarLastPourDate");
+
+  if (lastPour === todayStr) return;
+
+  let filledDays = (+localStorage.getItem("jamJarFilledDays") || 0) + 1;
+
+  localStorage.setItem("jamJarFilledDays", filledDays);
+  localStorage.setItem("jamJarLastPourDate", todayStr);
+
+  updateJar(filledDays);
+  elements.message.textContent = `📅 День ${filledDays} добавлен в банку воспоминаний!`;
+  elements.button.disabled = true;
+
+  if (filledDays >= totalDays) finishJar(filledDays);
+}
+
+function updateJar(filled) {
+  elements.jam.style.height = `${(filled / totalDays) * 100}%`;
+
+  const remaining = totalDays - filled;
+  const special = {
     10: "🎈 Ура! Уже 10 дней сладких моментов!",
     50: "💖 Полтинник радости — ты создаёшь чудо!",
     100: "💯 Вареньевой сотник! Кто молодец? 🍓 Ты!",
@@ -32,74 +68,28 @@ function updateJarVisual(filledDays) {
     190: "👑 Ты почти у финиша — поздравляю заранее!"
   };
 
-  if (specialMessages[filledDays]) {
-    dayCounter.textContent = specialMessages[filledDays];
-  } else {
-    const phrase = filledDays <= phrases188.length
-      ? phrases188[filledDays - 1]
-      : extraPhrases[Math.floor(Math.random() * extraPhrases.length)];
-    dayCounter.textContent = `🔖 Осталось собрать ещё ${remaining} ${declineDays(remaining)} — ${phrase}`;
-  }
+  elements.counter.textContent = special[filled]
+    || `🔖 Осталось собрать ещё ${totalDays - filled} ${declineDays(remaining)} — ${
+        phrases188[filled - 1] || extraPhrases[Math.floor(Math.random() * extraPhrases.length)]
+      }`;
 }
 
-function checkState() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const filledDays = parseInt(localStorage.getItem("jamJarFilledDays") || "0");
-  const lastPourDate = localStorage.getItem("jamJarLastPourDate");
-
-  updateJarVisual(filledDays);
-
-  if (today > endDate || filledDays >= totalDays) {
-    finishJar(filledDays);
-    return;
-  }
-
-  if (lastPourDate === today.toISOString().split("T")[0]) {
-    pourButton.disabled = true;
-    messageArea.textContent = "На сегодня варенье уже влито 🍓";
-  } else {
-    pourButton.disabled = false;
-    messageArea.textContent = "Нажми, чтобы добавить немного тепла 🙂";
-  }
+function finishJar(filled) {
+  updateJar(filled);
+  elements.message.textContent = "С Днём Рождения! Банка полна! 🎉";
+  elements.button.disabled = true;
+  elements.overlay.classList.remove("hidden");
 }
 
-function pourJam() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayStr = today.toISOString().split("T")[0];
-
-  let filledDays = parseInt(localStorage.getItem("jamJarFilledDays") || "0");
-  const lastPourDate = localStorage.getItem("jamJarLastPourDate");
-
-  if (lastPourDate === todayStr) {
-    messageArea.textContent = "Сегодня уже добавлено 💧";
-    return;
-  }
-
-  filledDays++;
-  localStorage.setItem("jamJarFilledDays", filledDays);
-  localStorage.setItem("jamJarLastPourDate", todayStr);
-  updateJarVisual(filledDays);
-
-  messageArea.textContent = `📅 День ${filledDays} добавлен в банку воспоминаний!`;
-  pourButton.disabled = true;
-
-  if (filledDays >= totalDays) {
-    finishJar(filledDays);
-  }
-}
-
-function finishJar(filledDays) {
-  updateJarVisual(filledDays);
-  messageArea.textContent = "С Днём Рождения! Банка полна! 🎉";
-  pourButton.disabled = true;
-  overlay.classList.remove("hidden");
+function getToday() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
 function declineDays(n) {
-  if (n % 10 === 1 && n % 100 !== 11) return "день";
-  if ([2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100)) return "дня";
+  const rem10 = n % 10, rem100 = n % 100;
+  if (rem10 === 1 && rem100 !== 11) return "день";
+  if ([2, 3, 4].includes(rem10) && ![12, 13, 14].includes(rem100)) return "дня";
   return "дней";
 }
